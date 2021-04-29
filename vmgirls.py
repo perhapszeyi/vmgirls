@@ -55,7 +55,10 @@ def get_pic():
         pic_url = 'https://www.vmgirls.com/{page}'.format(page=list_link[j])
         pic_req = requests.get(pic_url,headers=vmgirls_headers,proxies=proxies_ip)
         soup = BeautifulSoup(pic_req.text,'lxml')
-        real_pic = soup.select('div.nc-light-gallery > a > img')
+        if soup.select('div.nc-light-gallery > a > img') == soup.select('div.nc-light-gallery > a > img'):
+            real_pic = soup.select('div.nc-light-gallery > a > img')
+        else:
+            real_pic = soup.select('div.nc-light-gallery > p > img')
 
         for z in range(len(real_pic)):
             if not os.path.exists(list_title[j]):
@@ -72,7 +75,7 @@ def get_pic():
         print('任务{num}已完成'.format(num=j+1))
         print('网址{website}'.format(website=pic_url))
         e = timeit.default_timer()
-        print('运行时间为：'e-s,'秒')
+        print('运行时间为：',e-s,'秒')
         print('---------------------------------------------------------------------------------------')
 
 if __name__ == '__main__':
