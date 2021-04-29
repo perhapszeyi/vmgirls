@@ -57,8 +57,11 @@ def get_pic():
         soup = BeautifulSoup(pic_req.text,'lxml')
         if soup.select('div.nc-light-gallery > a > img') == soup.select('div.nc-light-gallery > a > img'):
             real_pic = soup.select('div.nc-light-gallery > a > img')
-        else:
+        elif soup.select('div.nc-light-gallery > p > img') == soup.select('div.nc-light-gallery > p > img'):
             real_pic = soup.select('div.nc-light-gallery > p > img')
+        else:
+            real_pic = soup.select('div.nc-light-gallery > img')
+
 
         for z in range(len(real_pic)):
             if not os.path.exists(list_title[j]):
