@@ -1,12 +1,12 @@
-import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
+import requests
 import random
 import linecache
-from concurrent.futures import ThreadPoolExecutor
 import os
 import base64
 import timeit
-from tqdm import tqdm
+
 
 headers = {
    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'
@@ -57,37 +57,30 @@ def get_pic():
         pic_req = requests.get(pic_url,headers=vmgirls_headers,proxies=proxies_ip)
         soup = BeautifulSoup(pic_req.text,'lxml')
 
-
-        # if soup.select('div.nc-light-gallery > a > img'):
-        #     real_pic = soup.select('div.nc-light-gallery > a > img')
-        # elif soup.select('div.nc-light-gallery > p > img') != '':
-        #     real_pic = soup.select('div.nc-light-gallery > p > img')
-        # elif soup.select('div.nc-light-gallery > img') != '':
-        #     real_pic = soup.select('div.nc-light-gallery > img')
-
         div = soup.find_all('div',class_='nc-light-gallery')
-        for k in div:
-            aaa = k.find_all('img')
-            print('--------------------------------------------------------------------')
-            print(aaa)
 
-        # for z in tqdm(range(len(real_pic))):
-        #     if not os.path.exists(list_title[j]):
-        #         os.mkdir(list_title[j])
+        for z in div:
+            if not os.path.exists(list_title[j]):
+                os.mkdir(list_title[j])
 
-        #     images_url = "https:" + real_pic[z]['src']
-        #     times = images_url.split('/')[-1].split('.')[0]
-        #     suffix = images_url.split('/')[-1].split('.')[-1]
-        #     get_images = requests.get(url=images_url,headers=vmgirls_headers,proxies=proxies_ip).content
-        
-        #     with open(list_title[j]+'/'+times+'.'+suffix,'wb') as f:
-        #         f.write(get_images)
-        #         # print('正在爬取"{name}"的第{num}张图片'.format(name=list_title[j],num=z+1))
-        # print('任务{num}已完成'.format(num=j+1))
-        # print('网址{website}'.format(website=pic_url))
-        # e = timeit.default_timer()
-        # print('运行时间为：',e-s,'秒')
-        # print('---------------------------------------------------------------------------------------')
+            images = z.find_all('img')
+            for x in tqdm(range(len(images))):
+                images_url = "https:" + images[x]['src']
+                try:
+                    requests.get(images_url,headers=vmgirls_headers,proxies=proxies_ip)
+                    times = images_url.split('/')[-1].split('.')[0]
+                    suffix = images_url.split('/')[-1].split('.')[-1]
+                    get_images = requests.get(url=images_url,headers=vmgirls_headers,proxies=proxies_ip).content
+            
+                    with open(list_title[j]+'/'+times+'.'+suffix,'wb') as f:
+                        f.write(get_images)
+                except:
+                    pass
+        print('任务{num}已完成'.format(num=j+1))
+        print('网址{website}'.format(website=pic_url))
+        e = timeit.default_timer()
+        print('运行时间为：',e-s,'秒')
+        print('---------------------------------------------------------------------------------------')
 
 if __name__ == '__main__':
     pool()
