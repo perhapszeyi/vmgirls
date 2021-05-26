@@ -30,7 +30,7 @@ def pool():
         port = soup.select('td[data-title="PORT"]')
         for i,p in zip(ip,port):
             url = 'https://www.baidu.com/'
-            agent = i.text + ':' + p.text
+            agent = 'http://' + i.text + ':' + p.text
             proxies = {'http': agent}
             ans = requests.get(url,proxies=proxies)
             if ans.status_code == 200:
